@@ -1,0 +1,44 @@
+{
+  "name": "eslint-astro-mate",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "A friendly astro eslint configuration",
+  "author": "",
+  "license": "MIT",
+  "keywords": [],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./src/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup-node src/index.js --format cjs && tsup-node src/index.js --dts-only --format esm",
+    "test": "node --test",
+    "posttest": "npm run lint && tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "devDependencies": {
+    "@stylistic/eslint-plugin": "^2.1.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-typegen": "^0.2.4",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@typescript-eslint/parser": "^7.13.0",
+    "eslint-plugin-astro": "^1.2.0",
+    "eslint-plugin-format": "^0.1.1",
+    "prettier-plugin-astro": "^0.14.0"
+  }
+}
