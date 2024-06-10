@@ -25,7 +25,8 @@
     "posttest": "npm run lint && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepublishOnly": "npm test && npm run build"
+    "prepublishOnly": "npm test && npm run typegen && npm run build",
+    "typegen": "node scripts/typegen"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2.1.0",
@@ -33,12 +34,13 @@
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-typegen": "^0.2.4",
     "tsup": "^8.1.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.13.0"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^7.13.0",
     "eslint-plugin-astro": "^1.2.0",
     "eslint-plugin-format": "^0.1.1",
+    "local-pkg": "^0.5.0",
     "prettier-plugin-astro": "^0.14.0"
   }
 }

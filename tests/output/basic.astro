@@ -1,0 +1,25 @@
+---
+const isJsx = true
+const content = 'hi!'
+
+function hi() {
+  console.log('hi')
+}
+
+const props = { 'b-a': 'b', 'a': 'a' }
+---
+
+<article>
+  <div>{content}</div>
+  <div>
+    {isJsx && <h1>{content}</h1>}
+  </div>
+</article>
+
+<script>
+  let { log: logger } = console
+  document.querySelector('h1')?.addEventListener('click', () => {
+    logger('clicked')
+  })
+  console.log('somehting')
+</script>

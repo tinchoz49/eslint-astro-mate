@@ -1,13 +1,8 @@
-import pluginAstro from 'eslint-plugin-astro'
-import pluginFormat from 'eslint-plugin-format'
-
 /** @typedef {import('prettier').Options} PrettierOptions */
 /** @typedef {import('eslint').Linter.FlatConfig} FlatConfig  */
-
 /**
- * @typedef {object} Options
+ * @typedef {object} StylisticOptions
  * @prop {string} [pluginName] Override style prefix - default: '@stylistic'
- * @prop {'all' | 'base' | 'recommended' | 'jsx-a11y-recommended' | 'jsx-a11y-strict'} [config] Astro config - default: 'recommended'
  * @prop {number | 'tab'} [indent] Indentation level - default: 2
  * @prop {'single' | 'double'} [quotes] Quote style - default: 'single'
  * @prop {boolean} [semi] Whether to enable semicolons - default: false
@@ -15,9 +10,18 @@ import pluginFormat from 'eslint-plugin-format'
  * @prop {boolean} [blockSpacing] Whether to require spaces around braces - default: true
  * @prop {'always' | 'as-needed' | 'consistent' | 'consistent-as-needed'} [quoteProps] When to enable prop quoting - default: 'consistent-as-needed'
  * @prop {'never' | 'always' | 'always-multiline' | 'only-multiline'} [commaDangle='always-multiline'] When to enable comma dangles - default: 'always-multiline'
+ */
+/**
+ * @typedef {object} Options
+ * @prop {'all' | 'base' | 'recommended' | 'jsx-a11y-recommended' | 'jsx-a11y-strict'} [config] Astro config - default: 'recommended'
+ * @prop {StylisticOptions} [style]
  * @prop {import('./typegen.js').RuleOptions} [overrides] Override astro rules
  * @prop {PrettierOptions & { astroSkipFrontmatter?: boolean, astroAllowShorthand?: boolean }} [prettier]
  */
+
+import pluginAstro from 'eslint-plugin-astro'
+import pluginFormat from 'eslint-plugin-format'
+import { isPackageExists } from 'local-pkg'
 
 const GLOB_ASTRO = '**/*.astro'
 const GLOB_ASTRO_TS = '**/*.astro/*.ts'
@@ -28,7 +32,7 @@ const GLOB_ASTRO_JS = '**/*.astro/*.js'
  * @param {FlatConfig['rules']} rules
  * @returns {FlatConfig['rules']}
  */
-const addStylisticRules = (prefix, rules) => {
+const addPrefixRules = (prefix, rules) => {
   const res = {}
   Object.keys(rules).forEach((name) => {
     res[`${prefix}/${name}`] = rules[name]
@@ -40,10 +44,16 @@ const addStylisticRules = (prefix, rules) => {
  * @param {Options?} options
  * @returns {FlatConfig[]}
  */
-export default function astro(options = {}) {
+export function astro(options = {}) {
+  const {
+    config = 'recommended',
+    style = {},
+    overrides = {},
+    prettier: userPrettierOptions = {},
+  } = options
+
   const {
     pluginName = '@stylistic',
-    config = 'recommended',
     indent = 2,
     quotes = 'single',
     semi = false,
@@ -51,9 +61,7 @@ export default function astro(options = {}) {
     blockSpacing = true,
     quoteProps = 'consistent-as-needed',
     commaDangle = 'always-multiline',
-    overrides = {},
-    prettier: userPrettierOptions = {},
-  } = options
+  } = style
 
   /** @type {PrettierOptions} */
   const prettierOptions = {
@@ -71,6 +79,10 @@ export default function astro(options = {}) {
         : 'preserve',
     arrowParens: arrowParens ? 'always' : 'avoid',
     ...userPrettierOptions,
+  }
+
+  if ((config === 'jsx-a11y-recommended' || config === 'jsx-a11y-strict') && !isPackageExists('eslint-plugin-jsx-a11y')) {
+    console.warn('eslint-astro-mate: To use a11y you need to install eslint-plugin-jsx-a11y.')
   }
 
   return [
@@ -96,9 +108,15 @@ export default function astro(options = {}) {
     },
     {
       files: [GLOB_ASTRO, GLOB_ASTRO_TS, GLOB_ASTRO_JS],
-      name: 'astro/formatter/disables',
+      name: 'astro/disables',
+      languageOptions: {
+        parserOptions: {
+          project: false,
+          program: null,
+        },
+      },
       rules: {
-        ...addStylisticRules(pluginName, {
+        ...addPrefixRules(pluginName, {
           'arrow-parens': 'off',
           'block-spacing': 'off',
           'comma-dangle': 'off',
@@ -123,13 +141,6 @@ export default function astro(options = {}) {
         'arrow-body-style': 'off',
         'prefer-arrow-callback': 'off',
         'antfu/consistent-list-newline': 'off',
-      },
-    },
-    {
-      files: ['**/*.d.ts'],
-      name: 'astro/dts/disables',
-      rules: {
-        'ts/triple-slash-reference': 'off',
       },
     },
     {
