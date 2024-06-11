@@ -3,7 +3,12 @@
   "type": "module",
   "version": "0.0.1",
   "description": "A friendly astro eslint configuration",
-  "author": "",
+  "author": {
+		"name": "Martín Acosta",
+		"email": "tinchoz49@gmail.com"
+	},
+  "repository": "tinchoz49/eslint-astro-mate",
+	"funding": "https://github.com/sponsors/tinchoz49",
   "license": "MIT",
   "keywords": [
     "eslint",
