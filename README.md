@@ -61,3 +61,18 @@ export default astro({
   }
 })
 ```
+
+### Change plugin prefix
+
+Astro Mate helps you work with stylistic and TypeScript rules. To do this, it needs to know the prefix of each plugin's rules. If your configuration changes the default prefix for these plugins, you should also update it in Astro Mate.
+
+```javascript
+import { astro } from 'eslint-astro-mate'
+
+export default astro({
+  style: {
+    pluginName: '@new-prefix-style'
+  },
+  tsPluginName: '@new-prefix-typescript'
+})
+```
