@@ -5,7 +5,10 @@
   "description": "A friendly astro eslint configuration",
   "author": "",
   "license": "MIT",
-  "keywords": [],
+  "keywords": [
+    "eslint",
+    "astro"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
