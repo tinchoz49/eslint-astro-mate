@@ -76,3 +76,30 @@ export default astro({
   tsPluginName: '@new-prefix-typescript'
 })
 ```
+
+## VSCode settings
+
+In your project `.vscode/settings.json`
+
+```json
+{
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.format.enable": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml",
+    "astro",
+    "css",
+    "tailwindcss"
+  ]
+}
+```
